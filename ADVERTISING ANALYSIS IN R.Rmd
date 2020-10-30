@@ -321,6 +321,7 @@ hist(advertising$Area.Income, main = "Histogram of area income", xlab = "Area in
 hist(advertising$Daily.Internet.Usage, main = " Histogram of daily internet usage", xlab = "Daily internet usage", col ="green")
 
 ```
+
 Daily time is negatively skewed and appears to be double peaked.
 Age column is positively skewed.
 Area income is negatively skewed and has a normal kurtosis.
@@ -389,6 +390,7 @@ cor(internet, clicks)
 
 cor(male, clicks)
 ```
+
 The correlation of daily time spent on a site and clicks on ad is about -0.748. The variables are strongly negatively linearly related.
 The correlation of age and clicks on ad is 0.4925. The variables are positively linearly related.
 The correlation of area income and clicks on ad is about -0.4762.The variables are negatively linearly related.
@@ -436,9 +438,11 @@ plot(site, internet, xlab="Daily time spent on site", ylab="Daily internet usage
 plot(site, income, xlab="Daily time spent on site", ylab="Area income", col = "red")
 plot(site, male,  xlab="Daily time spent on site", ylab="Male", col = "purple")
 ```
+
 There is no apparent strong relationship.
 
 ## Recommendations
+
 The individuals to be targeted spend between 32.6-91.43 hours on the site with mean time being 68.27 hours amd most people spending about 62.26 hours.
 This individual most like is between the ages of 19 and 61 and is around 36 years with most individuals being aged 31 years.
 The individual lives in an area with an income between 13996-79484 with most people who visit the site having an income of 61833.
