@@ -1,0 +1,448 @@
+---
+title: "ADVERTISING ANALYSIS IN R"
+author: "Chelagat Pauline Gechure"
+date: "10/30/2020"
+output: html_document
+---
+
+# ADVERTISING ANALYSIS
+
+## Research question
+Identify which individuals are most likely to click on the ads of an online cryptography course on a blog of a Kenyan entrepreneur.
+
+## Metric of success
+Successful identification of an individuals characteristics
+
+## Context
+A Kenyan entrepreneur has created an online cryptography course and would want to advertise it on her blog. She currently targets audiences originating from various countries. In the past, she ran ads to advertise a related course on the same blog and collected data in the process. She would now like to employ your services as a Data Science Consultant to help her identify which individuals are most likely to click on her ads. 
+
+## Experimental design and appropriateness of available data.
+Loading the data.
+Cleaning of the data: outliers, missing data, duplicates and anomalies.
+Univariate and bivariate EDA
+Recommendations
+
+```{r}
+#Loading the data
+advertising <- read.csv("~/MORINGA DS CORE/UNSUPERVISED LEARNING/WEEK 12/advertising.csv")
+View(advertising)
+
+#Previweing the dataset
+str(advertising)
+
+dim(advertising)
+
+head(advertising)
+
+class(advertising)
+
+typeof(advertising)
+
+#Finding the lenght of the dataframe
+length(advertising)
+```
+## Cleaning the data
+```{r}
+##Cleaning the data
+#Identifying the missing values
+is.na(advertising)
+
+# Finding the percentage of null values in the dataset
+colSums(is.na(advertising))/length(advertising)*100
+
+#There are no missing values in the dataset.
+```
+
+There are no missing values in the dataset.
+
+```{r}
+##Checking and dealing with duplicates
+duplicate_rows <- advertising[duplicated(advertising),]
+duplicate_rows
+
+```
+
+There are no duplicate values in the dataset.
+
+##Outliers
+```{r}
+##Checking and dealing with outliers
+
+library(tidyverse)
+
+outliers <- boxplot(advertising %>% select_if(is.numeric))
+outliers
+
+#The column Area.income has outliers.
+
+boxplot.stats(advertising$Area.income)$out
+##Viewing the outliers
+stat = boxplot.stats(advertising$Area.income)
+stat
+```
+
+There are a few outliers in the Area Income column but they will not be remove as it is common for people to be of varying ages.
+
+# UNIVARIATE SUMMARY
+## 1. MEASURES OF CENTRAL TENDANCY
+### MEAN
+```{r}
+##MEAN
+#Finding the mean of daily time spent on site
+daily.time.spent.mean <- mean(advertising$Daily.Time.Spent.on.Site)
+daily.time.spent.mean
+
+#Finding the mean of age
+age.mean <- mean(advertising$Age)
+age.mean
+
+#Finding the mean of area income
+area.income.mean <- mean(advertising$Area.Income)
+area.income.mean
+
+#Finding the mean of daily internt usage
+daily.internet.mean <- mean(advertising$Daily.Internet.Usage)
+daily.internet.mean
+
+```
+
+The mean dailt time spent on the site is 65.
+The mean age of the individual is 36 years.
+The mean area income is 55000
+The mean daily internet usage is 180.
+
+### MEDIAN
+```{r}
+##MEDIAN
+#Finding the median of daily time spent on site
+daily.time.spent.median <- median(advertising$Daily.Time.Spent.on.Site)
+daily.time.spent.median
+
+#Finding the median of age
+age.median <- median(advertising$Age)
+age.median
+
+#Finding the median of area income
+area.income.median <- median(advertising$Area.Income)
+area.income.median
+
+#Finding the median of daily internt usage
+daily.internet.median <- median(advertising$Daily.Internet.Usage)
+daily.internet.median
+
+```
+
+The median dailt time spent on the site is 68.215.
+The median age of the individual is 35 years.
+The median area income is 57012.3
+The median daily internet usage is 180.13.
+
+## MODE
+```{r}
+getmode <- function(v) {
+   uniqv <- unique(v)
+   uniqv[which.max(tabulate(match(v, uniqv)))]
+}
+
+# Calculating the mode using out getmode() function
+
+#Finding the mode of daily time spent on site
+daily.time.spent.mode<- getmode(advertising$Daily.Time.Spent.on.Site)
+daily.time.spent.mode
+
+#Finding the median of age
+age.mode <- getmode(advertising$Age)
+age.mode
+
+#Finding the median of area income
+area.income.mode <- getmode(advertising$Area.Income)
+area.income.mode
+
+#Finding the median of daily internt usage
+daily.internet.mode<- getmode(advertising$Daily.Internet.Usage)
+daily.internet.mode
+
+male.mode <- getmode(advertising$Male)
+male.mode
+
+clicks.mode <- getmode(advertising$Clicked.on.Ad)
+clicks.mode
+
+topics.mode <- getmode(advertising$Ad.Topic.Line)
+topics.mode
+
+city.mode <- getmode(advertising$City)
+city.mode
+
+country.mode <- getmode(advertising$Country)
+country.mode
+
+
+```
+
+The mode daily time spent on the site is 62.26.
+The mode age of the individual is 31 years.
+The mode area income is 61833.9
+The mode daily internet usage is 167.22
+The most common topic is the Cloned 5th generation orchestration.
+The most common city is Losamouth.
+The most common country is Czech Republic.
+
+## 2. MEASURES OF DISPERSION 
+### Min, 1st quantile, median, 3rd quantile and max
+```{r}
+#Finding the min, 1st quantilr, median, 3rd quantile and max of numeric columns.
+advertising.summary <- summary(advertising)
+advertising.summary
+
+#For each column
+daily.time.summary <- summary(advertising$ Daily.Time.Spent.on.Site)
+daily.time.summary 
+
+age.summary <- summary(advertising$Age)
+age.summary
+
+area.income.summary <- summary(advertising$Area.Income)
+area.income.summary
+
+daily.internet.summary <- summary(advertising$ Daily.Internet.Usage)
+daily.internet.summary
+
+```
+
+### Quantile 
+```{r}
+#For each column
+daily.time.quantile <- quantile(advertising$ Daily.Time.Spent.on.Site)
+daily.time.quantile
+
+age.quantile <- quantile(advertising$Age)
+age.quantile
+
+area.income.quantile <- quantile(advertising$Area.Income)
+area.income.quantile
+
+daily.internet.quantile <- quantile(advertising$ Daily.Internet.Usage)
+daily.internet.quantile
+```
+Daily time spent on the site ranges between 32.6 - 91.43..
+Age of the individual ranges between 19-61 .
+Area income ranges between 13996 - 79484
+Daily internet usage ranges between 104.78-269.96.
+
+### Variance
+```{r}
+#For each column
+daily.time.var <- var(advertising$ Daily.Time.Spent.on.Site)
+daily.time.var
+
+age.var <- var(advertising$Age)
+age.var
+
+area.income.var <- var(advertising$Area.Income)
+area.income.var
+
+daily.internet.var <- var(advertising$ Daily.Internet.Usage)
+daily.internet.var
+```
+The variance of daily time spent on the site is 251.3371.
+The variance age of the individual is 77.1861 years.
+The variance area income is 179952406
+The varaince daily internet usage is 1927.415.
+
+### Standard deviation
+```{r}
+#For each column
+daily.time.sd <- sd(advertising$ Daily.Time.Spent.on.Site)
+daily.time.sd
+
+age.sd <- sd(advertising$Age)
+age.sd
+
+area.income.sd <- sd(advertising$Area.Income)
+area.income.sd
+
+daily.internet.sd <- sd(advertising$ Daily.Internet.Usage)
+daily.internet.sd
+```
+The standard deviation of daily time spent on the site is 15.85361.
+The standard deviation of  age of the individual is 8.7855.
+The standard deviation of area income is 13414.63
+The standard deviation daily internet usage is 43.9023
+
+# 3. Graphical univariate
+## Boxplots
+```{r}
+# For each column
+boxplot(advertising$ Daily.Time.Spent.on.Site, main = "Boxplot of daily time spent on site", col = "blue")
+
+boxplot(advertising$Area.Income, main = "Boxplot of area income", col = "red")
+
+boxplot(advertising$ Daily.Internet.Usage, main = "Boxplot of daily internet usage", col = "green")
+
+boxplot(advertising$Age, main = "Boxplot of age", col = "yellow")
+```
+
+## Bar graphs
+```{r}
+#For each numeric column
+
+daily.time.spent.frequency <- table(advertising$Daily.Time.Spent.on.Site)
+barplot(daily.time.spent.frequency, main =" Bar graph of daily time spent on site", col =  "blue")
+
+area.income.frequency <- (advertising$Area.Income)
+barplot(area.income.frequency, main = "Bar graph of area income", col = "red")
+
+daily.internet.frequency <- table(advertising$ Daily.Internet.Usage)
+barplot(daily.internet.frequency, main = "Bar graph of daily internet usage", col = "green")
+
+age.frequency <- table(advertising$Age)
+barplot(age.frequency, main = "Bar graph of age", col = "yellow")
+
+male.frequency <- table(advertising$Male)
+barplot(male.frequency, main="Bar graph of male", col = "purple")
+
+clicked.on.frequency <- table(advertising$Clicked.on.Ad)
+barplot(clicked.on.frequency, main="Bar graph of clicked on ads", col="pink")
+```
+
+
+The column age is slightly positively skewed to the right and has a normal kurtosis.
+## Histograms
+
+```{r}
+#For each column
+hist(advertising$Daily.Time.Spent.on.Site, main = " Histogram of daily time spent on site", xlab = "Time spent on site", col="blue")
+
+hist(advertising$Age, main = " Histogram of age", xlab = "Age", col = " yellow")
+
+hist(advertising$Area.Income, main = "Histogram of area income", xlab = "Area income", col = "red")
+
+hist(advertising$Daily.Internet.Usage, main = " Histogram of daily internet usage", xlab = "Daily internet usage", col ="green")
+
+```
+Daily time is negatively skewed and appears to be double peaked.
+Age column is positively skewed.
+Area income is negatively skewed and has a normal kurtosis.
+Daily internet usage is double peaked.
+
+# 4. Bivariate and multivariate  graphical analysis
+## Bivariate summary
+### Covariance
+
+```{r}
+# Assigning the columns to variables
+site <- advertising$Daily.Time.Spent.on.Site
+age <- advertising$Age
+income <- advertising$Area.Income
+internet <- advertising$Daily.Internet.Usage
+male <-advertising$Male
+clicks <- advertising$Clicked.on.Ad
+
+# Using the cov() function to find the covariance
+cov(site, age)
+cov(site, income)
+cov(site, internet)
+cov(site, male)
+cov(site, clicks)
+
+cov(age,income)
+cov(age,internet)
+cov(age, male)
+cov(age, clicks)
+
+cov(income, internet)
+cov(income, male)
+cov(income, clicks)
+
+cov(internet, male)
+cov(internet, clicks)
+
+cov(male, clicks)
+
+```
+The covariance of daily time spent on a site and clicks on ad is about -5.933143. It indicates a negative linear relationship between the two variables.
+The covariance of age and clicks on ad is about 2.164665. It indicates a positive linear relationship between the two variables.
+The covariance of area income and clicks on ad is about -3195.989 It indicates a  large negative linear relationship between the two variables.
+The covariance of daily internet usage and clicks on ad is about -17.27409. It indicates a negative linear relationship between the two variables.
+
+### Correlation
+```{r}
+# Using the cor() function to find the covariance
+cor(site, age)
+cor(site, income)
+cor(site, internet)
+cor(site, male)
+cor(site, clicks)
+
+cor(age,income)
+cor(age,internet)
+cor(age, male)
+cor(age, clicks)
+
+cor(income, internet)
+cor(income, male)
+cor(income, clicks)
+
+cor(internet, male)
+cor(internet, clicks)
+
+cor(male, clicks)
+```
+The correlation of daily time spent on a site and clicks on ad is about -0.748. The variables are strongly negatively linearly related.
+The correlation of age and clicks on ad is 0.4925. The variables are positively linearly related.
+The correlation of area income and clicks on ad is about -0.4762.The variables are negatively linearly related.
+The correlation of daily internet usage  and clicks is -0.7865.The variables are strongly negatively linearly related.
+The correlation of male  and clicks is -0.038.The variables are weakly negatively linearly related.
+
+```{r}
+## Creating a matrix
+library(tidyverse)
+matrix <- cor(advertising %>% select_if(is.numeric))
+
+heatmap(matrix)
+
+#geom_tile(matrix)
+
+
+##Method 1
+library(reshape)
+melted_cormat <- melt(matrix)
+head(melted_cormat)
+
+library(ggplot2)
+ggplot(data = melted_cormat, aes(x=X1, y=X2, fill=value)) + 
+  geom_tile()
+
+##Mthod 2
+corrplot::corrplot((matrix))
+```
+## Graphical techniques
+### Scatterplots
+```{r}
+# Creating the scatter plot of clicks and its relationship to other variables
+
+plot(site, clicks, xlab="Daily time spent on site", ylab="Clicks on ad", col = "blue")
+plot(age, clicks, xlab="Age", ylab="Clicks on ad", col = "yellow")
+plot(internet, clicks, xlab="Daily internet usage", ylab="Clicks on ad", col = "green")
+plot(income, clicks, xlab="Area income", ylab="Clicks on ad", col = "red")
+plot(male, clicks, xlab="Male", ylab="Clicks on ad", col = "purple")
+```
+```{r}
+# Creating the scatter plot of site and its relationship to other variables
+
+plot(site, age, xlab="Daily time spent on Site", ylab="Age", col = "yellow")
+plot(site, internet, xlab="Daily time spent on site", ylab="Daily internet usage", col = "green")
+plot(site, income, xlab="Daily time spent on site", ylab="Area income", col = "red")
+plot(site, male,  xlab="Daily time spent on site", ylab="Male", col = "purple")
+```
+There is no apparent strong relationship.
+
+## Recommendations
+The individuals to be targeted spend between 32.6-91.43 hours on the site with mean time being 68.27 hours amd most people spending about 62.26 hours.
+This individual most like is between the ages of 19 and 61 and is around 36 years with most individuals being aged 31 years.
+The individual lives in an area with an income between 13996-79484 with most people who visit the site having an income of 61833.
+This individual to be targeted has a daily internet usage between 104.78-269.96 with most people having a usage of 167.22.
+Most of the individuals are from Lisamouth city and Czech Republic and the most visited topic is  Cloned 5th generation orchestration.
+It is worth noting tha age has a positive correlation with the clicks on an ad and should be considered as on of the strong factors to consider.
+
