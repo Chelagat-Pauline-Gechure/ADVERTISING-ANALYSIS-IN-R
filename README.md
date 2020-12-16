@@ -1,4 +1,4 @@
-# ADVERTISING-ANALYSIS-IN-R
+# ONLINE-CRYPTOGRAPHY-COURSE-ADVERTISING-ANALYSIS-IN-R
 
 ## Overview
 This is an R project that consists of  univariate, bivariate and multivariate analysis using R. The dataset used for analysis is about advertising and the analysis aim is to get the characteristics of individuals to be targeted to show case onine adverts on online cryptography courses.
